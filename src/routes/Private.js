@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { auth } from "../firebaseConnection";
 import { onAuthStateChanged } from "firebase/auth";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export function Private({ children }) {
   const [loading, setLoading] = useState(true);
@@ -10,7 +10,7 @@ export function Private({ children }) {
 
   useEffect(() => {
     async function isLoggedIn() {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, (user) => {
         if (user) {
           const userData = {
             uid: user.uid,
@@ -30,7 +30,7 @@ export function Private({ children }) {
       });
     }
     isLoggedIn();
-  }, []);
+  }, [navigate]);
   if (loading) {
     return (
       <div>

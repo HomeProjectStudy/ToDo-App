@@ -12,6 +12,8 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
+import { toast } from "react-toastify";
+
 import "./styles.css";
 
 export function Admin() {
@@ -37,7 +39,9 @@ export function Admin() {
       userUid: user?.uid,
     })
       .then(() => {
-        alert("Alerta tarefa");
+        toast.success("Tarefa adicionada com sucesso.", {
+          icon: "🍕",
+        });
         setTask("");
       })
       .catch((error) => console.log(error));
@@ -50,6 +54,9 @@ export function Admin() {
   async function handleDeleteTask(id) {
     const docRef = doc(db, "tarefa", id);
     await deleteDoc(docRef);
+    toast.warn("Tarefa removida com sucesso", {
+      icon: "✅",
+    });
   }
   function handleUpdatedTask(taskDatabase) {
     setTask(taskDatabase.tarefa);
@@ -84,7 +91,7 @@ export function Admin() {
           orderBy("created", "desc"),
           where("userUid", "==", data?.uid)
         );
-        const unsub = onSnapshot(querySort, (snapshot) => {
+        onSnapshot(querySort, (snapshot) => {
           let list = [];
           snapshot.forEach((doc) => {
             list.push({
@@ -129,7 +136,7 @@ export function Admin() {
             </button>
             <button
               className="button-trash"
-              onClick={() => handleDeleteTask(taskDatabase)}
+              onClick={() => handleDeleteTask(taskDatabase.id)}
             >
               Concluir
             </button>
